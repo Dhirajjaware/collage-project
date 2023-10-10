@@ -10,7 +10,7 @@ class Place {
   }
 }
 
-const searchBox = document.querySelector('.search__contaienr');
+const searchBox = document.querySelector('.container__Search');
 const form = document.querySelector('.search');
 const inputPlace = document.querySelector('.input__place');
 
@@ -24,7 +24,6 @@ class App {
     // Get user's position
     this._getPosition();
     this._getLocalStorage();
-
     // Get data from local storage
 
     // Attach event handlers
@@ -65,6 +64,7 @@ class App {
     this.#mapEvent = mapE;
     searchBox.classList.remove('hidden');
     inputPlace.focus();
+    this.backspace();
   }
 
   _hideForm() {
@@ -73,24 +73,25 @@ class App {
   }
 
   _place(e) {
+    e.preventDefault();
     //Get input from user
     const placeName = inputPlace.value;
 
-    console.log(placeName);
     const { lat, lng } = this.#mapEvent.latlng;
 
     const workout = new Place([lat, lng], placeName);
 
-    // // Add new object to workout array
+    // Add new object to workout array
     this.#workouts.push(workout);
+    console.log(this.#workouts);
 
-    // // Render workout on map as marker
+    // Render workout on map as marker
     this._renderWorkoutMarker(workout);
 
-    // // Hide form + clear input fields
+    // Hide form + clear input fields
     this._hideForm();
 
-    // // Set local storage to all Places
+    // Set local storage to all Places
     this._setLocalStorage();
   }
 
@@ -102,6 +103,7 @@ class App {
           maxWidth: 10,
           autoClose: false,
           closeOnClick: false,
+          className: 'place',
         })
       )
       .setPopupContent(`<h6>${workout.placeName}</h6>`)
@@ -118,9 +120,14 @@ class App {
     if (!data) return;
 
     this.#workouts = data;
+  }
 
-    this.#workouts.forEach(work => {
-      this._place(work)
+  backspace() {
+    document.addEventListener('keydown', e => {
+      e.key === 'Escape' &&
+      !document.querySelector('.container__Search').classList.contains('hidden')
+        ? this._hideForm()
+        : '';
     });
   }
 }
