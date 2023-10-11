@@ -13,6 +13,9 @@ class Place {
 const searchBox = document.querySelector('.container__Search');
 const form = document.querySelector('.search');
 const inputPlace = document.querySelector('.input__place');
+const btnClear = document.querySelector('.btn__clear');
+const btnLogin = document.querySelector('.btn__login');
+const btnLogout = document.querySelector('.btn__logout');
 
 class App {
   #map;
@@ -24,10 +27,30 @@ class App {
     // Get user's position
     this._getPosition();
     this._getLocalStorage();
+    this._getLocalStorageLogin();
     // Get data from local storage
 
     // Attach event handlers
     form.addEventListener('submit', this._place.bind(this));
+
+    btnClear.addEventListener('click', () => {
+      this.deleteMarkers();
+      console.log('clear');
+    });
+    btnLogin.addEventListener('click', () => {
+      this.login();
+    });
+
+    btnLogout.addEventListener('click', () => {
+      console.log('Logout successfully');
+      this.logout();
+    });
+  }
+
+  logout() {
+    localStorage.clear();
+    location.reload();
+    btnLogout.classList.add('hidden');
   }
 
   _getPosition() {
@@ -58,6 +81,11 @@ class App {
     this.#workouts.forEach(work => {
       this._renderWorkoutMarker(work);
     });
+  }
+
+  deleteMarkers() {
+    localStorage.clear();
+    location.reload();
   }
 
   _showForm(mapE) {
@@ -129,6 +157,33 @@ class App {
         ? this._hideForm()
         : '';
     });
+  }
+
+  login() {
+    const firstName = prompt('Enter your name: ');
+    if (firstName) {
+      this._setLocalStorageLogin(firstName);
+      btnLogout.classList.remove('hidden');
+      location.reload();
+      alert('LOGIN SUCCESSFULLY 😊');
+    } else {
+      prompt('Please enter valid name ☹️');
+      location.reload();
+    }
+  }
+
+  _setLocalStorageHidden(hidden){
+    localStorage.setItem('hidden', hidden)
+  }
+
+  _getLocalStorageLogin() {
+    const data = localStorage.getItem('firstname');
+    if (!data) return;
+    btnLogin.textContent = data;
+  }
+
+  _setLocalStorageLogin(name) {
+    JSON.stringify(localStorage.setItem('firstname', name));
   }
 }
 
