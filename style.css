@@ -68,3 +68,28 @@ body {
 .hidden {
   display: none;
 }
+
+.login-logout-label:hover {
+  box-shadow: 2px 2px 5px white;
+  transition: 0.5s;
+}
+
+@media screen and (min-width: 960px) {
+  .login-logout-label {
+    position: absolute;
+    right: 0;
+    align-items: center;
+    border: 1px inset rgb(0, 0, 0);
+  }
+}
+@media screen and (min-width: 375px) {
+  .inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.hide {
+  display: none;
+}

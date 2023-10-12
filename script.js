@@ -10,6 +10,7 @@ class Place {
   }
 }
 
+const navbar = document.querySelector('.navbar');
 const searchBox = document.querySelector('.container__Search');
 const form = document.querySelector('.search');
 const inputPlace = document.querySelector('.input__place');
@@ -18,12 +19,14 @@ const btnLogin = document.querySelector('.btn__login');
 const btnLogout = document.querySelector('.btn__logout');
 
 class App {
+  //Private fields \
   #map;
   #mapZoomLevel = 12;
   #mapEvent;
   #workouts = [];
 
   constructor() {
+    this.checkLogin();
     // Get user's position
     this._getPosition();
     this._getLocalStorage();
@@ -31,12 +34,13 @@ class App {
     // Get data from local storage
 
     // Attach event handlers
-    form.addEventListener('submit', this._place.bind(this));
+    form.addEventListener('submit', this._newPlace.bind(this));
 
     btnClear.addEventListener('click', () => {
       this.deleteMarkers();
       console.log('clear');
     });
+
     btnLogin.addEventListener('click', () => {
       this.login();
     });
@@ -100,7 +104,7 @@ class App {
     inputPlace.value = '';
   }
 
-  _place(e) {
+  _newPlace(e) {
     e.preventDefault();
     //Get input from user
     const placeName = inputPlace.value;
@@ -128,7 +132,8 @@ class App {
       .addTo(this.#map)
       .bindPopup(
         L.popup({
-          maxWidth: 10,
+          maxWidth: 100,
+          minWidth: 70,
           autoClose: false,
           closeOnClick: false,
           className: 'place',
@@ -162,7 +167,9 @@ class App {
   login() {
     const firstName = prompt('Enter your name: ');
     if (firstName) {
-      this._setLocalStorageLogin(firstName);
+      const userName = this.capital(firstName);
+      console.log(userName);
+      this._setLocalStorageLogin(userName);
       btnLogout.classList.remove('hidden');
       location.reload();
       alert('LOGIN SUCCESSFULLY 😊');
@@ -172,8 +179,8 @@ class App {
     }
   }
 
-  _setLocalStorageHidden(hidden){
-    localStorage.setItem('hidden', hidden)
+  _setLocalStorageHidden(hidden) {
+    localStorage.setItem('hidden', hidden);
   }
 
   _getLocalStorageLogin() {
@@ -184,6 +191,23 @@ class App {
 
   _setLocalStorageLogin(name) {
     JSON.stringify(localStorage.setItem('firstname', name));
+  }
+
+  capital(words) {
+    const output = words
+      .split(' ')
+      .map(word => word[0].toUpperCase() + word.slice(1))
+      .join('');
+    return output;
+  }
+
+  checkLogin() {
+    const data = localStorage.getItem('firstname');
+    if (!data) return;
+
+    if (data) {
+      btnLogout.classList.remove('hide');
+    }
   }
 }
 
