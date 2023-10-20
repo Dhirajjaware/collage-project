@@ -2,11 +2,11 @@
 
 class Place {
   // date = new Date();
-  // id = (Date.now() + '').slice(-10);
-
+  id = (Date.now() + '').slice(-10);
   constructor(coords, placeName) {
     this.coords = coords;
     this.placeName = placeName;
+    this.id = this.id;
   }
 }
 
@@ -112,6 +112,7 @@ class App {
     const { lat, lng } = this.#mapEvent.latlng;
 
     const workout = new Place([lat, lng], placeName);
+    console.log(workout);
 
     // Add new object to workout array
     this.#workouts.push(workout);
@@ -165,16 +166,22 @@ class App {
   }
 
   login() {
-    const firstName = prompt('Enter your name: ');
-    if (firstName) {
+    const firstName = prompt('Please enter your name:');
+
+    // Check if firstName is not empty and contains only letters (no numbers or special characters)
+    const namePattern = /^[A-Za-z]+$/;
+
+    if (firstName && namePattern.test(firstName)) {
       const userName = this.capital(firstName);
       console.log(userName);
       this._setLocalStorageLogin(userName);
       btnLogout.classList.remove('hidden');
       location.reload();
-      alert('LOGIN SUCCESSFULLY 😊');
+      alert(`Welcome, ${userName}! 😊`);
     } else {
-      prompt('Please enter valid name ☹️');
+      alert(
+        'Please enter a valid name with only letters (no numbers or special characters) ☹️'
+      );
       location.reload();
     }
   }
@@ -211,4 +218,5 @@ class App {
   }
 }
 
+//Instance of class
 const app = new App();
