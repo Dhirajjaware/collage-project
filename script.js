@@ -10,6 +10,7 @@ class Place {
   }
 }
 
+
 const navbar = document.querySelector('.navbar');
 const searchBox = document.querySelector('.container__Search');
 const form = document.querySelector('.search');
@@ -57,24 +58,26 @@ class App {
     btnLogout.classList.add('hidden');
   }
 
-  _getPosition() {
-    if (navigator.geolocation)
-      navigator.geolocation.getCurrentPosition(
-        this._loadMap.bind(this),
-        function () {
-          alert('Could not get your position');
-        }
-      );
+  async _getPosition() {
+    try {
+      const data = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+      if (!data) return;
+      this._loadMap(data);
+    } catch (err) {
+      console.log(err);
+      alert('Not abel to find Location!');
+      location.reload();
+    }
   }
 
   _loadMap(position) {
-    const { latitude } = position.coords;
-    const { longitude } = position.coords;
-    const coords = [latitude, longitude];
+    const { latitude: lat, longitude: lng } = position.coords;
 
-    this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
+    this.#map = L.map('map').setView([lat, lng], this.#mapZoomLevel);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
@@ -112,11 +115,9 @@ class App {
     const { lat, lng } = this.#mapEvent.latlng;
 
     const workout = new Place([lat, lng], placeName);
-    console.log(workout);
 
     // Add new object to workout array
     this.#workouts.push(workout);
-    console.log(this.#workouts);
 
     // Render workout on map as marker
     this._renderWorkoutMarker(workout);
@@ -217,6 +218,5 @@ class App {
     }
   }
 }
-
 //Instance of class
 const app = new App();

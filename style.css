@@ -12,6 +12,10 @@ body {
   background-color: #fff;
 }
 
+.my-nav {
+  background: linear-gradient(to bottom, #001524, #000000, #1c1b22);
+
+}
 .workout {
   background-color: var(--color-dark--2);
 }
